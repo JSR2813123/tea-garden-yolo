@@ -47,6 +47,8 @@ Django
 * 推論結果儲存
 * Basic Auth
 * Rate Limiting
+* HTTPS
+* Gzip Compression
 
 ---
 
