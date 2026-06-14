@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head><meta charset="utf-8"><title>管理介面</title></head>
+<body>
+  <h1>/manage 管理介面</h1>
+
+  <p><a href="{% url 'manage_photo_list' %}">新增照片</a></p>
+
+  <h3>最近上傳照片</h3>
+  <ul>
+    {% for p in latest_photos %}
+      <li>#{{ p.id }} - {{ p.garden }} - {{ p.flight }} - {{ p.uploaded_at }}</li>
+    {% empty %}
+      <li>目前沒有照片</li>
+    {% endfor %}
+  </ul>
+</body>
+</html>

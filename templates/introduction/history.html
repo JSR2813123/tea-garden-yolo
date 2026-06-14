@@ -1,0 +1,314 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <title>推論歷史紀錄-面積測試</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root{
+      --bg:#f6f7fb;
+      --card:#ffffff;
+      --text:#1f2937;
+      --muted:#6b7280;
+      --line:#e5e7eb;
+      --primary:#0f766e;
+      --primary2:#115e59;
+      --shadow: 0 10px 24px rgba(17,24,39,.08);
+      --radius: 16px;
+    }
+
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans TC", "Microsoft JhengHei", Arial, sans-serif;
+      color:var(--text);
+
+      background-image: url("{% static 'images/tea-background.jpg' %}");
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+    }
+
+    .page{
+      max-width: 1100px;
+      margin: 28px auto;
+      padding: 6px 16px 48px;
+
+      background: rgba(255,255,255,0.88);
+      border-radius: 16px;
+      backdrop-filter: blur(4px);
+    }
+
+    .top-links{
+      margin-top:24px;
+      margin-left:6px;
+      margin-bottom:18px;
+    }
+
+    .top-links a{
+      display:inline-block;
+      margin-right:10px;
+      text-decoration:none;
+      color:#115e59;
+      font-weight:700;
+      padding:6px 12px;
+      border-radius:8px;
+    }
+
+    .top-links a:hover{
+      background:rgba(15,118,110,.08);
+    }
+
+    .top-links a.active{
+      background:#0f766e;
+      color:white;
+    }
+
+    .top-links a{
+      display:inline-block;
+      margin-right:10px;
+      text-decoration:none;
+      color:var(--primary2);
+      font-weight:700;
+    }
+
+    h1{
+      margin: 0 0 18px;
+      font-size: 28px;
+    }
+
+    .card{
+      background:var(--card);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:20px;
+      margin-bottom:20px;
+      border:1px solid rgba(15,118,110,.08);
+    }
+
+    .chart-wrap{
+      position:relative;
+      width:100%;
+      height:360px;
+    }
+
+    table{
+      width:100%;
+      border-collapse:collapse;
+    }
+
+    th, td{
+      padding:12px 10px;
+      border-bottom:1px solid var(--line);
+      text-align:left;
+      vertical-align:middle;
+      font-size:14px;
+    }
+
+    th{
+      background:#f8fafc;
+      font-weight:700;
+    }
+
+    tr:hover{
+      background:#fafafa;
+    }
+
+    .muted{
+      color:var(--muted);
+    }
+
+    .badge{
+      display:inline-block;
+      padding:4px 10px;
+      border-radius:999px;
+      background:rgba(15,118,110,.10);
+      color:var(--primary2);
+      font-size:12px;
+      font-weight:700;
+    }
+
+    .empty{
+      text-align:center;
+      color:var(--muted);
+      padding:24px 0;
+    }
+    .local-btn{
+  display:inline-block;
+  padding:8px 16px;
+  border-radius:12px;
+  text-decoration:none;
+  font-weight:700;
+  font-size:20px;
+
+  color:#115e59;
+  background:transparent;
+
+    transition:all .15s ease;
+  }
+
+  .local-btn:hover{
+    background:rgba(15,118,110,.08);
+  }
+
+  .local-btn.active{
+    background:#0f766e;
+    color:white;
+  }
+  .chart-title{
+  margin: 0 0 14px;
+  font-size: 18px;
+  font-weight: 800;
+  color:#1f2937;
+  }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="top-links">
+      <a href="/introduction/infer/">Infer</a>
+        <a href="/introduction/history/" class="active">History</a>
+        <a href="http://localhost:5000" target="_blank" rel="noopener" class="local-btn">
+          航照影像系統
+      </a>
+    </div>
+
+    <h1>推論歷史紀錄</h1>
+
+    {% comment %} <div class="card">
+      <div class="chart-title">總產量折線圖</div>
+      <div class="chart-wrap">
+        <canvas id="yieldChart"></canvas>
+      </div>
+    </div> {% endcomment %}
+
+    <div class="card">
+      <div class="chart-title">密度折線圖</div>
+      <div class="chart-wrap">
+        <canvas id="densityChart"></canvas>
+      </div>
+    </div>
+
+    <div class="card">
+      <table>
+        <thead>
+          <tr>
+            <th>時間</th>
+            <th>圖片</th>
+            <th>模式</th>
+            <th>框數</th>
+            <th>總產量(g)</th>
+            <th>面積(cm²)</th>
+            <th>密度(g/cm²)</th>
+            <th>信心度中位數</th>
+            <th>耗時(ms)</th>
+            <th>狀態</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for run in runs %}
+          <tr>
+            <td>{{ run.created_at|date:"Y-m-d H:i:s" }}</td>
+            <td>
+              {% if run.photo and run.photo.image %}
+                {{ run.photo.image.name }}
+              {% else %}
+                <span class="muted">-</span>
+              {% endif %}
+            </td>
+            <td><span class="badge">{{ run.mode }}</span></td>
+            <td>{{ run.bbox_count }}</td>
+            <td>{{ run.total_weight|floatformat:2 }}</td>
+            <td>{{ run.area_cm2|floatformat:2 }}</td>
+            <td>{{ run.density_g_per_cm2|floatformat:4 }}</td>
+            <td>{{ run.median_confidence|floatformat:3 }}</td>
+            <td>{{ run.elapsed_ms|default:"-" }}</td>
+            <td>{{ run.status }}</td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="10" class="empty">目前沒有推論紀錄</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    const labels = {{ chart_labels_json|safe }};
+    //const weightValues = {{ chart_weights_json|safe }}; 總產量圖用
+    const densityValues = {{ chart_densities_json|safe }};
+
+    //const yieldCtx = document.getElementById("yieldChart").getContext("2d"); 總產量圖用
+    const densityCtx = document.getElementById("densityChart").getContext("2d");
+
+    {% comment %} new Chart(yieldCtx, {
+      type: "line",
+      data: {
+        labels: labels,
+        datasets: [{
+          label: "總產量 (g)",
+          data: weightValues,
+          tension: 0.2
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            display: true
+          }
+        },
+        scales: {
+          x: {
+            ticks: {
+              autoSkip: true,
+              maxTicksLimit: 10,
+              maxRotation: 45,
+              minRotation: 20
+            }
+          },
+          y: {
+            beginAtZero: true
+          }
+        }
+      }
+    }); {% endcomment %}
+    new Chart(densityCtx, {
+    type: "line",
+    data: {
+      labels: labels,
+      datasets: [{
+        label: "密度 (g/cm²)",
+        data: densityValues,
+        tension: 0.2
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          display: true
+        }
+      },
+      scales: {
+        x: {
+          ticks: {
+            autoSkip: true,
+            maxTicksLimit: 10,
+            maxRotation: 45,
+            minRotation: 20
+          }
+        },
+        y: {
+          beginAtZero: true
+        }
+      }
+    }
+  });
+  </script>
+</body>
+</html>

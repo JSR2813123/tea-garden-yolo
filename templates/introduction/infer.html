@@ -1,0 +1,1037 @@
+{% load static %}
+<style>
+  .fileBtn{
+  border: 0;
+  background: var(--primary);
+  color: white;
+  font-weight: 700;
+  padding: 10px 16px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: .15s ease;
+  box-shadow: 0 8px 16px rgba(15,118,110,.18);
+  }
+
+.fileBtn:hover{
+  background: var(--primary2);
+  }
+
+.fileNameLabel{
+  font-size: 14px;
+  color: var(--muted);
+  font-weight: 600;
+  }
+  :root{
+    --bg:#f6f7fb;
+    --card:#ffffff;
+    --text:#1f2937;
+    --muted:#6b7280;
+    --line:#e5e7eb;
+    --primary:#0f766e;
+    --primary2:#115e59;
+    --shadow: 0 10px 24px rgba(17,24,39,.08);
+    --radius: 16px;
+  }
+  body{
+  margin:0;
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans TC", "Microsoft JhengHei", Arial, sans-serif;
+  color:var(--text);
+  background:
+    linear-gradient(rgba(246,247,251,0.80), rgba(246,247,251,0.80)),
+    url("{% static 'images/tea-background.jpg' %}");
+
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  }
+
+  
+  .page{
+    max-width: 1050px;
+    margin: 28px auto;
+    padding: 0 16px 48px;
+    
+  }
+  
+  .hero{
+    background: linear-gradient(180deg, rgba(15,118,110,.10), rgba(15,118,110,0));
+    border: 1px solid rgba(15,118,110,.18);
+    border-radius: 22px;
+    padding: 18px 18px 16px;
+    margin-bottom: 18px;
+  }
+  .titleRow{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    margin-bottom: 10px;
+  }
+  .hTitle{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-weight:800;
+    letter-spacing:.2px;
+    font-size: 22px;
+  }
+  .hSub{
+    margin: 0;
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  .uibox{
+    background: var(--card);
+    border:1px solid var(--line);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 14px;
+  }
+  .controls{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    flex-wrap:wrap;
+    margin-top: 10px;
+  }
+  .fileWrap{
+    flex: 1;
+    min-width: 260px;
+    border:1px dashed var(--line);
+    border-radius: 14px;
+    padding: 10px 12px;
+    background: #fafafa;
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .fileWrap .hint{
+    color: var(--muted);
+    font-size: 13px;
+  }
+  input[type="file"]{
+    width: 100%;
+  }
+  .btn{
+    appearance:none;
+    border:0;
+    border-radius: 12px;
+    padding: 10px 14px;
+    font-weight: 700;
+    cursor:pointer;
+    background: var(--primary);
+    color: white;
+    transition: .15s ease;
+    box-shadow: 0 8px 16px rgba(15,118,110,.18);
+  }
+  .btn:hover{ background: var(--primary2); }
+  .btn:disabled{
+    opacity:.55;
+    cursor:not-allowed;
+    box-shadow:none;
+  }
+  .sectionTitle{
+    margin: 18px 0 10px;
+    font-size: 16px;
+    font-weight: 800;
+  }
+
+  /* result card */
+  .resultCard{
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 14px;
+  }
+  .cardTop{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    margin-bottom: 12px;
+  }
+  .fileName{
+    font-weight: 800;
+    font-size: 15px;
+  }
+  .timePill{
+    font-size: 12px;
+    color: var(--muted);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 6px 10px;
+    background: #fbfbfb;
+    white-space:nowrap;
+  }
+  .grid2{
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+  @media (max-width: 860px){
+    .grid2{ grid-template-columns: 1fr; }
+  }
+
+  .pane{
+    border:1px solid var(--line);
+    border-radius: 14px;
+    padding: 12px;
+    background: #fff;
+  }
+  .paneHeader{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  .paneHeader .label{
+    font-weight: 800;
+    font-size: 13px;
+    color: #374151;
+  }
+  .imgBox{
+    display:flex;
+    justify-content:center;
+  }
+  .imgBox img{
+    max-width: 100%;
+    width: 320px; /* 視覺上更像卡片展示 */
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    display:block;
+    background:#fff;
+  }
+
+  .bboxBox{
+    position: relative;
+    display: inline-block;
+    width: 100%;
+  }
+  .bboxBox canvas{
+    position:absolute;
+    left:0;
+    top:0;
+    pointer-events:none;
+    border-radius: 12px;
+  }
+
+  .stats{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    gap:12px;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid var(--line);
+  }
+  .yield{
+    display:flex;
+    align-items:baseline;
+    gap:10px;
+  }
+  .yield .k{
+    color: var(--muted);
+    font-weight: 700;
+  }
+  .yield .v{
+    font-size: 30px;
+    font-weight: 900;
+    color: var(--primary);
+    letter-spacing: .2px;
+  }
+  .yield .unit{
+    color: var(--muted);
+    font-weight: 800;
+  }
+
+  table{
+    width:100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    font-size: 13px;
+  }
+  th, td{
+    border-top: 1px solid var(--line);
+    padding: 8px 6px;
+    text-align:left;
+  }
+  th{
+    color:#374151;
+    font-weight: 800;
+    background: #fafafa;
+  }
+  .tag{
+    display:inline-block;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-weight: 800;
+    font-size: 12px;
+    background: rgba(15,118,110,.10);
+    color: var(--primary2);
+    border: 1px solid rgba(15,118,110,.18);
+  }
+
+  .jsonBlock{
+    margin-top: 12px;
+  }
+  .jsonTitle{
+    font-weight: 900;
+    margin: 6px 0;
+    font-size: 13px;
+  }
+  pre{
+    margin:0;
+    white-space: pre-wrap;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 10px;
+    background: #0b1020;
+    color: #e5e7eb;
+    font-size: 12px;
+    line-height: 1.5;
+    overflow:auto;
+  }
+
+  /* results wrapper */
+  #results{
+    margin-top: 12px;
+    display:flex;
+    flex-direction:column;
+    gap: 16px;
+  }
+
+.top-links{
+  margin-bottom:20px;
+}
+
+.top-links a{
+  display:inline-block;
+  margin-right:12px;
+  padding:8px 16px;
+  text-decoration:none;
+  color:#115e59;
+  font-weight:700;
+  font-size:20px;
+  border-radius:12px;
+  transition:all .15s ease;
+}
+
+.top-links a:hover{
+  background:rgba(15,118,110,.08);
+}
+
+.top-links a.active{
+  background:#0f766e;
+  color:white;
+}
+
+.header-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  margin-bottom:16px;
+}
+
+.header-left h1{
+  margin:0;
+}
+
+.subtitle{
+  margin-top:6px;
+  color:#6b7280;
+}
+
+.garden-title{
+  font-size:28px;
+  font-weight:700;
+  color:#0f766e;
+  background:rgba(15,118,110,.08);
+  padding:10px 18px;
+  border-radius:14px;
+  margin-right:40px;
+}
+.batchBox{
+  background:white;
+  border:1px solid #e5e7eb;
+  border-radius:16px;
+  padding:16px 18px;
+  margin-bottom:14px;
+  display:grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap:16px;
+}
+
+.batchItem{
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  min-height:84px;
+}
+
+.batchLabel{
+  font-weight:700;
+  color:#374151;
+  margin-bottom:8px;
+  font-size:15px;
+}
+
+.batchValue{
+  font-size:30px;
+  font-weight:900;
+  color:#0f766e;
+  line-height:1.15;
+}
+
+.metricStack{
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  align-items:flex-end;
+}
+
+.metricMini{
+  display:flex;
+  align-items:baseline;
+  gap:8px;
+}
+
+.metricMini .mk{
+  color:var(--muted);
+  font-weight:700;
+  font-size:13px;
+}
+
+.metricMini .mv{
+  color:#111827;
+  font-weight:800;
+  font-size:15px;
+}
+
+@media (max-width: 860px){
+  .batchBox{
+    grid-template-columns:1fr;
+  }
+
+  .stats{
+    flex-direction:column;
+    align-items:flex-start;
+  }
+
+  .metricStack{
+    align-items:flex-start;
+  }
+}
+.local-btn{
+  display:inline-block;
+  padding:8px 16px;
+  border-radius:12px;
+  text-decoration:none;
+  font-weight:700;
+  font-size:20px;
+
+  color:#115e59;
+  background:transparent;
+
+  transition:all .15s ease;
+}
+
+.local-btn:hover{
+  background:rgba(15,118,110,.08);
+}
+
+.local-btn.active{
+  background:#0f766e;
+  color:white;
+}
+
+
+.video-modal{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,0.6);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:9999;
+}
+
+.video-content{
+  position:relative;
+  background:#000;
+  border-radius:20px;
+  padding:14px;
+  width:min(1100px, 92vw);
+  box-sizing:border-box;
+  box-shadow:0 20px 60px rgba(0,0,0,.35);
+}
+
+.video-content video{
+  width:100%;
+  aspect-ratio:16/9;
+  max-height:85vh;
+  border-radius:14px;
+  display:block;
+}
+
+.close-btn{
+  position:absolute;
+  top:8px;
+  right:12px;
+  font-size:26px;
+  color:white;
+  cursor:pointer;
+  font-weight:900;
+  z-index:10000;
+}
+</style>
+
+
+
+<div id="videoModal" class="video-modal">
+  <div class="video-content">
+    <span class="close-btn" id="closeVideo">&times;</span>
+    <video id="introVideo" autoplay muted controls>
+      <source src="{% static 'videos/intro.mp4' %}" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+  </div>
+</div>
+
+
+<div class="page">
+  <div class="hero">
+    <div class="top-links">
+      <a href="/introduction/infer/" class="active">Infer</a>
+      <a href="/introduction/history/">History</a>
+      <a href="http://localhost:5000" target="_blank" rel="noopener" class="local-btn">
+        航照影像系統
+      </a>
+    </div>
+
+
+<div class="header-row">
+  <div class="header-left">
+    <h1>🌿 茶葉影像辨識分析</h1>
+    <p class="subtitle">請先上傳圖片後按下開始辨識</p>
+  </div>
+    <div class="garden-title">
+      茶園拉普達
+    </div>
+</div>
+
+
+    <div class="uibox">
+      <div class="controls">
+        <div class="fileWrap">
+          <input id="file" type="file" accept="image/*" multiple hidden />
+          <button id="chooseBtn" type="button" class="fileBtn">
+            選擇圖片
+          </button>
+          <span id="fileName" class="fileNameLabel">
+            尚未選擇檔案
+          </span>
+        </div>
+        <button id="btnNormal" class="btn" type="button">Normal辨識</button>
+        <button id="btnSahi" class="btn" type="button">SAHI辨識</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="sectionTitle">分析紀錄</div>
+
+<div id="batchBox" class="batchBox">
+  <div class="batchItem">
+    <div class="batchLabel">本批次預估總產量</div>
+    <div class="batchValue">
+      <span id="batchTotal">0.00</span> g
+    </div>
+  </div>
+
+  <div class="batchItem">
+    <div class="batchLabel">本批次總面積</div>
+    <div class="batchValue">
+      <span id="batchArea">0.00</span> cm²
+    </div>
+  </div>
+
+  <div class="batchItem">
+    <div class="batchLabel">本批次平均密度</div>
+    <div class="batchValue">
+      <span id="batchDensity">0.0000</span> g/cm²
+    </div>
+  </div>
+</div>
+
+<div id="results"></div>
+</div>
+
+<script>
+const btnNormal = document.getElementById("btnNormal");
+const btnSahi = document.getElementById("btnSahi");
+const fileInput = document.getElementById("file");
+const resultsEl = document.getElementById("results");
+const chooseBtn = document.getElementById("chooseBtn");
+const fileNameLabel = document.getElementById("fileName");
+let batchTotalWeight = 0;
+let batchTotalArea = 0;
+const batchTotalEl = document.getElementById("batchTotal");
+const batchAreaEl = document.getElementById("batchArea");
+const batchDensityEl = document.getElementById("batchDensity");
+const CLASS_WEIGHT = {
+  tea_cut: 1.31,
+  tea_cut_green: 0.65
+};
+
+const modal = document.getElementById("videoModal");
+const closeBtn = document.getElementById("closeVideo");
+const video = document.getElementById("introVideo");
+
+if (modal && closeBtn && video) {
+  closeBtn.addEventListener("click", () => {
+    modal.style.display = "none";
+    video.pause();
+  });
+
+  modal.addEventListener("click", (e) => {
+    if (e.target === modal) {
+      modal.style.display = "none";
+      video.pause();
+    }
+  });
+}
+
+
+function buildRow(file) {
+  const row = document.createElement("div");
+  row.className = "resultCard";
+
+  // top
+  const top = document.createElement("div");
+  top.className = "cardTop";
+
+  const fileName = document.createElement("div");
+  fileName.className = "fileName";
+  fileName.textContent = `任務：${file.name}`;
+
+  const timePill = document.createElement("div");
+  timePill.className = "timePill";
+  timePill.textContent = "Inference time: -";
+
+  top.appendChild(fileName);
+  top.appendChild(timePill);
+  row.appendChild(top);
+
+  //class_name
+  const grid = document.createElement("div");
+  grid.className = "grid2";
+
+  // Original pane
+  const leftPane = document.createElement("div");
+  leftPane.className = "pane";
+
+  const leftHead = document.createElement("div");
+  leftHead.className = "paneHeader";
+  const leftLabel = document.createElement("div");
+  leftLabel.className = "label";
+  leftLabel.textContent = "原圖";
+  leftHead.appendChild(leftLabel);
+
+  const leftImgBox = document.createElement("div");
+  leftImgBox.className = "imgBox";
+  const imgOrig = document.createElement("img");
+  leftImgBox.appendChild(imgOrig);
+
+  leftPane.appendChild(leftHead);
+  leftPane.appendChild(leftImgBox);
+
+  // Result pane
+  const rightPane = document.createElement("div");
+  rightPane.className = "pane";
+
+  const rightHead = document.createElement("div");
+  rightHead.className = "paneHeader";
+  const rightLabel = document.createElement("div");
+  rightLabel.className = "label";
+  rightLabel.textContent = "辨識結果（含偵測框）";
+  rightHead.appendChild(rightLabel);
+
+  const rightImgBox = document.createElement("div");
+  rightImgBox.className = "imgBox";
+
+  const box = document.createElement("div");
+  box.className = "bboxBox";
+  box.style.width = "320px"; // 跟 img 同寬（視覺一致）
+
+  const imgRes = document.createElement("img");
+
+  const cv = document.createElement("canvas");
+
+  box.appendChild(imgRes);
+  box.appendChild(cv);
+  rightImgBox.appendChild(box);
+
+  // stats area (yield + table)
+  const stats = document.createElement("div");
+  stats.className = "stats";
+
+  const yieldWrap = document.createElement("div");
+  yieldWrap.className = "yield";
+
+  const yieldK = document.createElement("div");
+  yieldK.className = "k";
+  yieldK.textContent = "預估總產量：";
+
+  const yieldV = document.createElement("div");
+  yieldV.className = "v";
+  yieldV.textContent = "0.00";
+
+  const yieldUnit = document.createElement("div");
+  yieldUnit.className = "unit";
+  yieldUnit.textContent = "g";
+
+  yieldWrap.appendChild(yieldK);
+  yieldWrap.appendChild(yieldV);
+  yieldWrap.appendChild(yieldUnit);
+
+  const metricStack = document.createElement("div");
+  metricStack.className = "metricStack";
+
+  const areaRow = document.createElement("div");
+  areaRow.className = "metricMini";
+  areaRow.innerHTML = `
+    <span class="mk">固定面積：</span>
+    <span class="mv"><span class="areaValue">0.00</span> cm²</span>
+  `;
+
+  const densityRow = document.createElement("div");
+  densityRow.className = "metricMini";
+  densityRow.innerHTML = `
+    <span class="mk">密度：</span>
+    <span class="mv"><span class="densityValue">0.0000</span> g/cm²</span>
+  `;
+  const areaValueEl = areaRow.querySelector(".areaValue");
+  const densityValueEl = densityRow.querySelector(".densityValue");
+
+  const ruleRow = document.createElement("div");
+  ruleRow.className = "metricMini";
+  ruleRow.innerHTML = `
+    <span class="mk">規則：</span>
+    <span class="mv">依類別重量計算</span>
+  `;
+
+  metricStack.appendChild(areaRow);
+  metricStack.appendChild(densityRow);
+  metricStack.appendChild(ruleRow);
+
+  stats.appendChild(yieldWrap);
+  stats.appendChild(metricStack);
+
+  const table = document.createElement("table");
+  const thead = document.createElement("thead");
+  thead.innerHTML = `
+    <tr>
+      <th style="width:32%;">類別</th>
+      <th style="width:24%;">重量估計</th>
+      <th style="width:24%;">信心度</th>
+    </tr>
+  `;
+  const tbody = document.createElement("tbody");
+  table.appendChild(thead);
+  table.appendChild(tbody);
+
+  rightPane.appendChild(rightHead);
+  rightPane.appendChild(rightImgBox);
+  rightPane.appendChild(stats);
+  rightPane.appendChild(table);
+
+  grid.appendChild(leftPane);
+  grid.appendChild(rightPane);
+
+  row.appendChild(grid);
+
+  // JSON block
+  const jsonBlock = document.createElement("div");
+  jsonBlock.className = "jsonBlock";
+
+  const jsonTitle = document.createElement("div");
+  jsonTitle.className = "jsonTitle";
+  jsonTitle.textContent = "JSON";
+
+  const pre = document.createElement("pre");
+  pre.textContent = "";
+
+  jsonBlock.appendChild(jsonTitle);
+  jsonBlock.appendChild(pre);
+  row.appendChild(jsonBlock);
+
+  // Load image previews
+  const url = URL.createObjectURL(file);
+  imgOrig.src = url;
+  imgRes.src = url;
+
+  const ctx = cv.getContext("2d");
+
+  function syncCanvasToImage() {
+    // 這裡維持你原本的做法：用 clientWidth/clientHeight
+    cv.width = imgRes.clientWidth;
+    cv.height = imgRes.clientHeight;
+    cv.style.width = imgRes.clientWidth + "px";
+    cv.style.height = imgRes.clientHeight + "px";
+  }
+
+  function clearCanvas() {
+    ctx.clearRect(0, 0, cv.width, cv.height);
+  }
+
+  function updateStats(dets) {
+    
+
+    // 表格
+    tbody.innerHTML = "";
+    for (const d of dets) {
+      const tr = document.createElement("tr");
+
+      const clsName = d.cls_name ?? "unknown";
+      const unitWeight = Number(CLASS_WEIGHT[clsName] || 0);
+
+      const tdClass = document.createElement("td");
+      tdClass.innerHTML = `<span class="tag">${d.display_cls_name ?? d.cls_name ?? "unknown"}</span>`;
+
+      const tdW = document.createElement("td");
+      tdW.textContent = `${unitWeight.toFixed(2)}g`;
+
+      const tdC = document.createElement("td");
+      const conf = (typeof d.conf === "number") ? (d.conf * 100).toFixed(2) : "-";
+      tdC.textContent = conf === "-" ? "-" : `${conf}%`;
+
+      tr.appendChild(tdClass);
+      tr.appendChild(tdW);
+      tr.appendChild(tdC);
+      tbody.appendChild(tr);
+    }
+
+  }
+
+  function drawDetections(dets) {
+    clearCanvas();
+
+    const natW = imgRes.naturalWidth;
+    const natH = imgRes.naturalHeight;
+    const dispW = imgRes.clientWidth;
+    const dispH = imgRes.clientHeight;
+
+    const sx = dispW / natW;
+    const sy = dispH / natH;
+
+    ctx.lineWidth = 2;
+    ctx.font = "14px sans-serif";
+
+    for (const d of dets) {
+      const [x1, y1, x2, y2] = d.bbox;
+
+      // ===== 縮放比例（你可以調整）=====
+      const scale =0.8 ;  // 建議 0.8 ~ 0.9
+
+      // ===== 原中心點 =====
+      const cx = (x1 + x2) / 2;
+      const cy = (y1 + y2) / 2;
+
+      // ===== 原寬高 =====
+      const w = (x2 - x1) * scale;
+      const h = (y2 - y1) * scale;
+
+      // ===== 新 bbox =====
+      const nx1 = cx - w / 2;
+      const ny1 = cy - h / 2;
+      const nx2 = cx + w / 2;
+      const ny2 = cy + h / 2;
+
+      // ===== 畫到畫面 =====
+      const rx = nx1 * sx;
+      const ry = ny1 * sy;
+      const rw = (nx2 - nx1) * sx;
+      const rh = (ny2 - ny1) * sy;
+
+      ctx.strokeStyle ="red";
+      ctx.strokeRect(rx, ry, rw, rh);
+
+      //const showName = d.display_cls_name ?? d.cls_name ?? "unknown";
+      //const confText = typeof d.conf === "number" ? (d.conf * 100).toFixed(1) : "0.0";
+      //const label = `${showName} ${(d.conf * 100).toFixed(1)}%`;
+      //const pad = 4;
+      //const textW = ctx.measureText(label).width;
+      //const textH = 16;
+
+      //ctx.fillStyle = "rgba(255,0,0,0.75)";
+      //ctx.fillRect(rx, Math.max(0, ry - textH), textW + pad * 2, textH);
+
+      //ctx.fillStyle = "white";
+      //ctx.fillText(label, rx + pad, Math.max(12, ry - 4));
+    }
+
+    //按照類別權重計算重量
+    updateStats(dets);
+  }
+
+  imgRes.onload = () => {
+    syncCanvasToImage();
+    clearCanvas();
+  };
+
+    return {
+    row,
+    file,
+    pre,
+    imgRes,
+    cv,
+    ctx,
+    syncCanvasToImage,
+    drawDetections,
+    clearCanvas,
+    timePill,
+    yieldV,
+    areaValueEl,
+    densityValueEl
+  };
+}
+
+let items = [];
+chooseBtn.addEventListener("click", () => {
+  fileInput.click();
+});
+
+fileInput.addEventListener("change", () => {
+  const files = Array.from(fileInput.files || []);
+  if(files.length === 0){
+    fileNameLabel.textContent = "尚未選擇檔案";
+  }else if(files.length === 1){
+    fileNameLabel.textContent = files[0].name;
+  }else{
+    fileNameLabel.textContent = `已選擇 ${files.length} 個檔案`;
+  }
+  resultsEl.innerHTML = "";
+  items = [];
+  batchTotalWeight = 0;
+  batchTotalArea = 0;
+  batchTotalEl.textContent = "0.00";
+  batchAreaEl.textContent = "0.00";
+  batchDensityEl.textContent = "0.0000";
+  
+  if (files.length === 0) return;
+
+  for (const f of files) {
+    const item = buildRow(f);
+    items.push(item);
+    resultsEl.appendChild(item.row);
+  }
+});
+
+async function runInfer(mode) {
+  const files = Array.from(fileInput.files || []);
+  if (files.length === 0) {
+    alert("請先選擇檔案");
+    return;
+  }
+
+  btnNormal.disabled = true;
+  btnSahi.disabled = true;
+  btnNormal.textContent = mode === "normal" ? "辨識中..." : "Normal辨識";
+  btnSahi.textContent = mode === "sahi" ? "辨識中..." : "SAHI辨識";
+
+
+  batchTotalWeight = 0;
+  batchTotalArea = 0;
+  batchTotalEl.textContent = "0.00";
+  batchAreaEl.textContent = "0.00";
+  batchDensityEl.textContent = "0.0000";
+
+  // 逐張推論（同步等待）最穩（保留你的行為）
+  for (const item of items) {
+    const { file, pre, imgRes, syncCanvasToImage, drawDetections, clearCanvas, timePill, yieldV, areaValueEl, densityValueEl } = item;
+    
+
+    const fd = new FormData();
+    fd.append("file", file);  //添加file
+    fd.append("mode", mode);  //添加mode
+    
+    const start = performance.now();
+    pre.textContent = `Uploading & inferring... (${mode})`;
+
+    try {
+      const r = await fetch("/api/infer/", { method: "POST", body: fd });
+
+      const end = performance.now();
+      const time = ((end - start) / 1000).toFixed(2);
+      timePill.textContent = "Inference time: " + time + " s";
+
+      const text = await r.text();
+
+      if (!r.ok) {
+        if (r.status === 504) {
+          pre.textContent = "SAHI 推論時間過長，Nginx 代理逾時（504）。";
+        } else {
+          pre.textContent = `HTTP ${r.status}\n\n${text}`;
+        }
+        clearCanvas();
+        continue;
+      }
+
+      pre.textContent = text;
+
+      try {
+        const data = JSON.parse(text);
+        if (data.ok) {
+          const dets = Array.isArray(data.result)
+            ? data.result
+            : (data.result?.detections || []);
+
+          imgRes.src = URL.createObjectURL(file);
+          imgRes.onload = () => {
+            syncCanvasToImage();
+            drawDetections(dets);
+          };
+
+          const totalWeight = Number(data.total_weight || 0);
+          const areaCm2 = Number(data.area_cm2 || 0);
+          const density = Number(data.density_g_per_cm2 || 0);
+
+          yieldV.textContent = totalWeight.toFixed(2);
+          areaValueEl.textContent = areaCm2.toFixed(2);
+          densityValueEl.textContent = density.toFixed(4);
+
+          batchTotalWeight += totalWeight;
+          batchTotalArea += areaCm2;
+
+          const batchAvgDensity = batchTotalArea > 0
+            ? (batchTotalWeight / batchTotalArea)
+            : 0;
+
+          batchTotalEl.textContent = batchTotalWeight.toFixed(2);
+          batchAreaEl.textContent = batchTotalArea.toFixed(2);
+          batchDensityEl.textContent = batchAvgDensity.toFixed(4);
+        } else {
+          clearCanvas();
+        }
+      } catch (e) {
+        clearCanvas();
+      }
+    } catch (e) {
+      pre.textContent = String(e);
+      clearCanvas();
+    }
+  }
+  btnNormal.disabled = false;
+  btnSahi.disabled = false;
+  btnNormal.textContent = "Normal辨識";
+  btnSahi.textContent = "SAHI辨識";
+};
+btnNormal.addEventListener("click", () => runInfer("normal"));
+btnSahi.addEventListener("click", () => runInfer("sahi"));
+</script>

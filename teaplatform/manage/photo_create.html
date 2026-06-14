@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <title>新增照片</title>
+</head>
+<body>
+  <h1>新增 Photo</h1>
+
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">送出</button>
+  </form>
+
+  <p><a href="{% url 'manage_home' %}">回 /manage</a></p>
+</body>
+</html>

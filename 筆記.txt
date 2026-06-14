@@ -1,0 +1,104 @@
+group 權限的集合，可以把一個user放入group，自動就能獲得這個group的權限，可以用來分權限的層級，然後給不同的user，然後可以在/admin裡面新增
+/model.py class可以新增一個類別，用於紀錄資料的(給維護用的增讀改刪CRUD)
+python manage.py createsuperuser 可以用來新增一個user，要填名稱(登入用到)，密碼(登入用到)，email(免填)
+python manage.py makemigrations  -> 用來create model
+python manage.py migrate ->用來跑新的model  
+python manage.py runserver ->執行本機
+.\backend\venv\Scripts\python.exe manage.py runserver 127.0.0.1:8000 ->執行venv本機
+
+
+nginx(nginx.conf是主要設定nginx的地方)
+cd C:\Users\C_PLUS_PLUS\nginx  執行1
+.\nginx.exe  執行2     systemctl start nginx  Linux執行指令
+cd C:\Users\C_PLUS_PLUS\nginx   修改後1
+.\nginx.exe -t    修改後2
+.\nginx.exe -s reload  修改後3
+netstat -ano | findstr :8080 檢查1    windows系統用nginx會有兩個listening同時存在的問題
+curl.exe -v -H "Accept-Encoding: gzip" -o NUL http://127.0.0.1:8080/static/admin/css/base.css 看f12資訊(powershell)
+curl.exe -I http://127.0.0.1:8080/admin/login/ 看f12資訊(powershell)
+.\nginx.exe -s quit 關nginx.exe     
+taskkill /F /IM nginx.exe 全關閉
+
+
+waitress(venv執行，以下3步)
+cd C:\Users\C_PLUS_PLUS\tea-ai
+.\backend\venv\Scripts\activate 
+python -m waitress --listen=127.0.0.1:8000 teaplatform.wsgi:application       systemd service  Linux執行指令
+python -m waitress --listen=0.0.0.0:8000 teaplatform.wsgi:application 
+
+自簽憑證(for https通過 行動熱點變換ip，以下5步)
+ipconfig 先找到目前的網址     192.168.43.12 假設Ipv4出現這樣的ip
+cd C:\Users\C_PLUS_PLUS\nginx\conf\certs 到nginx的certs裡
+mkcert 192.168.43.12 localhost 127.0.0.1 ::1 用mkcert產生新憑證
+ssl_certificate     certs/192.168.43.12+3.pem;   修改nignx.conf 1
+ssl_certificate_key certs/192.168.43.12+3-key.pem; 修改nignx.conf 2
+修改nginx  (-t and -s reload)
+
+
+
+worker運行(2步) 原本非同步要用的
+.\backend\venv\Scripts\activate
+celery -A teaplatform worker -l info -P solo
+
+
+django ORM 
+帳號teafarmer   
+密碼 abcde123
+SQL密碼 abcde123
+
+basic auth 
+帳號 admin
+密碼 tea123
+
+
+limit rate測試
+powershell 
+時間+結果(0.026698 200)
+1..20 | % { curl.exe -s -o NUL -w "%{time_total} %{http_code}`n" http://127.0.0.1:8080/admin/login/ }
+
+2026/02/04 17:25:54 [error] 7380#12444: *23 limiting requests, excess: 5.668 by zone "login_limit", client: 127.0.0.1, server: localhost, request: "GET /admin/login/ HTTP/1.1", host: "127.0.0.1:8080"
+2026/02/04 17:25:54 [error] 7380#12444: *24 limiting requests, excess: 5.654 by zone "login_limit", client: 127.0.0.1, server: localhost, request: "GET /admin/login/ HTTP/1.1", host: "127.0.0.1:8080"
+findstr /i "limit_req limiting" C:\Users\C_PLUS_PLUS\nginx\logs\error.log
+
+get測試
+1..20 | % { curl.exe -s -o NUL -w "%{http_code}`n" http://127.0.0.1:8080/admin/login/ }
+post測試
+1..20 | % { curl.exe -s -o NUL -X POST -w "%{http_code}`n" http://127.0.0.1:8080/admin/login/ }
+1..20 | % {curl.exe -k -s -o NUL -X POST -w "%{http_code}`n" `https://127.0.0.1:8443/admin/login/}
+
+log指令 查找哪個 IP登入、時間點、哪個URL、狀態碼、nginx花費時間(rt)、後端花費時間(urt)
+C:\Users\C_PLUS_PLUS\nginx\logs\access.log
+
+YOLO串接
+1.pip install ultralytics
+
+
+
+自動化測試python
+
+pip install pytest
+pytest
+pip install pytest-html  (報告插件)
+pytest --htmlreport.html-self contain--html
+
+
+math.py(要測的程式)
+    def add(a,b):
+        return a+b
+
+
+(test_math.py)
+from math import add
+assert add(3,4)==7
+
+
+
+
+
+
+
+
+
+
+
+
