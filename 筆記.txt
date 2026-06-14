@@ -41,56 +41,6 @@ worker運行(2步) 原本非同步要用的
 celery -A teaplatform worker -l info -P solo
 
 
-django ORM 
-帳號teafarmer   
-密碼 abcde123
-SQL密碼 abcde123
-
-basic auth 
-帳號 admin
-密碼 tea123
-
-
-limit rate測試
-powershell 
-時間+結果(0.026698 200)
-1..20 | % { curl.exe -s -o NUL -w "%{time_total} %{http_code}`n" http://127.0.0.1:8080/admin/login/ }
-
-2026/02/04 17:25:54 [error] 7380#12444: *23 limiting requests, excess: 5.668 by zone "login_limit", client: 127.0.0.1, server: localhost, request: "GET /admin/login/ HTTP/1.1", host: "127.0.0.1:8080"
-2026/02/04 17:25:54 [error] 7380#12444: *24 limiting requests, excess: 5.654 by zone "login_limit", client: 127.0.0.1, server: localhost, request: "GET /admin/login/ HTTP/1.1", host: "127.0.0.1:8080"
-findstr /i "limit_req limiting" C:\Users\C_PLUS_PLUS\nginx\logs\error.log
-
-get測試
-1..20 | % { curl.exe -s -o NUL -w "%{http_code}`n" http://127.0.0.1:8080/admin/login/ }
-post測試
-1..20 | % { curl.exe -s -o NUL -X POST -w "%{http_code}`n" http://127.0.0.1:8080/admin/login/ }
-1..20 | % {curl.exe -k -s -o NUL -X POST -w "%{http_code}`n" `https://127.0.0.1:8443/admin/login/}
-
-log指令 查找哪個 IP登入、時間點、哪個URL、狀態碼、nginx花費時間(rt)、後端花費時間(urt)
-C:\Users\C_PLUS_PLUS\nginx\logs\access.log
-
-YOLO串接
-1.pip install ultralytics
-
-
-
-自動化測試python
-
-pip install pytest
-pytest
-pip install pytest-html  (報告插件)
-pytest --htmlreport.html-self contain--html
-
-
-math.py(要測的程式)
-    def add(a,b):
-        return a+b
-
-
-(test_math.py)
-from math import add
-assert add(3,4)==7
-
 
 
 
